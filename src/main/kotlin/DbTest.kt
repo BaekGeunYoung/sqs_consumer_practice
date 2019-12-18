@@ -12,17 +12,17 @@ data class Member(
 fun main() {
     connect()
 
-    HikariCP.default("jdbc:mysql://localhost:3306/kotliquery", "root", "dkdltm123")
+    HikariCP.default("jdbc:mysql://localhost:3306/kotliquery?serverTimezone=UTC", "root", "dkdltm123")
 
     using(sessionOf(HikariCP.dataSource()))
     {
-        it.run(queryOf("""
-            create table members (
-                id serial not null primary key,
-                name varchar(64),
-                age int,
-            )
-        """).asExecute)
+//        it.run(queryOf("""
+//            create table members (
+//                id serial not null primary key,
+//                name varchar(64),
+//                age int
+//            )
+//        """).asExecute)
 
         val insertQuery = "insert into members (name, age) values (?, ?)"
 
@@ -50,11 +50,10 @@ fun connect() {
     val connectionProps = Properties()
     connectionProps["user"] = "root"
     connectionProps["password"] = "dkdltm123"
+    connectionProps["serverTimezone"] = "UTC"
     try {
-//        Class.forName("com.mysql.cj.jdbc.Driver").newInstance()
-        val conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/kotliquery", connectionProps)
-    } catch (ex: SQLException) {
-        ex.printStackTrace()
+        Class.forName("com.mysql.cj.jdbc.Driver").newInstance()
+        DriverManager.getConnection("jdbc:mysql://localhost:3306/kotliquery", connectionProps)
     } catch (ex: Exception) {
         ex.printStackTrace()
     }
