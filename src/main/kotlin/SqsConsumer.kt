@@ -18,7 +18,7 @@ class SqsConsumer (private val sqs: SqsAsyncClient): CoroutineScope {
     private val N_WORKERS = 100
     private val SQS_URL = "https://sqs.ap-northeast-2.amazonaws.com/182756308452/ticket_reservation_data_queue"
 
-    fun start() = launch {
+    fun start() = runBlocking {
         val messageChannel = Channel<Message>()
         repeat(N_WORKERS) {
             launchWorker(messageChannel)
@@ -36,7 +36,7 @@ class SqsConsumer (private val sqs: SqsAsyncClient): CoroutineScope {
                 .build()
 
             val messages = sqs.receiveMessage(receiveRequest).await().messages()
-            println("${Thread.currentThread().name} Retrieved ${messages.size} messages")
+            println("${currentThread().name} Retrieved ${messages.size} messages")
 
             messages.forEach {
                 channel.send(it)
@@ -69,7 +69,7 @@ class SqsConsumer (private val sqs: SqsAsyncClient): CoroutineScope {
                     processMsg(msg)
                     deleteMessage(msg)
                 } catch (ex: Exception) {
-                    println("${Thread.currentThread().name} exception trying to process message ${msg.body()}")
+                    println("${currentThread().name} exception trying to process message ${msg.body()}")
                     ex.printStackTrace()
                     changeVisibility(msg)
                 }
@@ -79,9 +79,9 @@ class SqsConsumer (private val sqs: SqsAsyncClient): CoroutineScope {
 
     //큐 메세지를 처리하는 예시 코드
     private suspend fun processMsg(message: Message) {
-        println("${Thread.currentThread().name} Started processing message: ${message.body()}")
+        println("${currentThread().name} Started processing message: ${message.body()}")
         delay((1000L..2000L).random())
-        println("${Thread.currentThread().name} Finished processing of message: ${message.body()}")
+        println("${currentThread().name} Finished processing of message: ${message.body()}")
     }
 
     private suspend fun deleteMessage(message: Message) {
@@ -89,7 +89,7 @@ class SqsConsumer (private val sqs: SqsAsyncClient): CoroutineScope {
             req.queueUrl(SQS_URL)
             req.receiptHandle(message.receiptHandle())
         }.await()
-        println("${Thread.currentThread().name} Message deleted: ${message.body()}")
+        println("${currentThread().name} Message deleted: ${message.body()}")
     }
 
     private suspend fun changeVisibility(message: Message) {
@@ -98,6 +98,6 @@ class SqsConsumer (private val sqs: SqsAsyncClient): CoroutineScope {
             req.receiptHandle(message.receiptHandle())
             req.visibilityTimeout(10)
         }.await()
-        println("${Thread.currentThread().name} Changed visibility of message: ${message.body()}")
+        println("${currentThread().name} Changed visibility of message: ${message.body()}")
     }
 }
