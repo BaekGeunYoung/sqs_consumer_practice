@@ -1,6 +1,5 @@
 import kotliquery.*;
 import java.sql.DriverManager
-import java.sql.SQLException
 import java.util.*
 
 data class Member(
@@ -10,39 +9,39 @@ data class Member(
 )
 
 fun main() {
-    connect()
+//    connect()
 
     HikariCP.default("jdbc:mysql://localhost:3306/kotliquery?serverTimezone=UTC", "root", "dkdltm123")
 
     using(sessionOf(HikariCP.dataSource()))
     {
-//        it.run(queryOf("""
-//            create table members (
-//                id serial not null primary key,
-//                name varchar(64),
-//                age int
-//            )
-//        """).asExecute)
-
-        val insertQuery = "insert into members (name, age) values (?, ?)"
-
-        it.run(queryOf(insertQuery, "alice", 20).asUpdate)
-        it.run(queryOf(insertQuery, "bob", 25).asUpdate)
-
-        val allRowsQuery =
-            queryOf("select * from members")
-                .map { row ->
-                    Member(
-                        id = row.long("id"),
-                        name = row.string("name"),
-                        age = row.int("age")
-                    )
-                }.asList
-        val rows: List<Member> = it.run(allRowsQuery)
-
-        for(row in rows) {
-            println(row)
-        }
+        it.run(queryOf("""
+            create table messages (
+                id serial not null primary key,
+                message varchar(64),
+                created_at timestamp not null
+            )
+        """).asExecute)
+//
+//        val insertQuery = "insert into members (name, age) values (?, ?)"
+//
+//        it.run(queryOf(insertQuery, "alice", 20).asUpdate)
+//        it.run(queryOf(insertQuery, "bob", 25).asUpdate)
+//
+//        val allRowsQuery =
+//            queryOf("select * from members")
+//                .map { row ->
+//                    Member(
+//                        id = row.long("id"),
+//                        name = row.string("name"),
+//                        age = row.int("age")
+//                    )
+//                }.asList
+//        val rows: List<Member> = it.run(allRowsQuery)
+//
+//        for(row in rows) {
+//            println(row)
+//        }
     }
 }
 

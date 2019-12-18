@@ -3,10 +3,15 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.SendChannel
 import kotlinx.coroutines.future.await
+import kotliquery.HikariCP
+import kotliquery.queryOf
+import kotliquery.sessionOf
+import kotliquery.using
 import software.amazon.awssdk.services.sqs.SqsAsyncClient
 import software.amazon.awssdk.services.sqs.model.Message
 import software.amazon.awssdk.services.sqs.model.ReceiveMessageRequest
 import java.lang.Thread.currentThread
+import java.util.*
 import kotlin.coroutines.CoroutineContext
 
 
@@ -80,7 +85,13 @@ class SqsConsumer (private val sqs: SqsAsyncClient): CoroutineScope {
     //큐 메세지를 처리하는 예시 코드
     private suspend fun processMsg(message: Message) {
         println("${currentThread().name} Started processing message: ${message.body()}")
-        delay((1000L..2000L).random())
+
+        using(sessionOf(HikariCP.dataSource()))
+        {
+            val insertQuery = "insert into messages (message, created_at) values (?, ?)"
+            it.run(queryOf(insertQuery, message.body(), Date()).asUpdate)
+        }
+
         println("${currentThread().name} Finished processing of message: ${message.body()}")
     }
 
