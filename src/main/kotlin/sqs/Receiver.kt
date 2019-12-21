@@ -1,3 +1,5 @@
+package sqs
+
 import kotlinx.coroutines.runBlocking
 import kotliquery.HikariCP
 import software.amazon.awssdk.regions.Region

@@ -1,3 +1,5 @@
+package db
+
 import kotliquery.*;
 import java.sql.DriverManager
 import java.util.*
@@ -9,7 +11,7 @@ data class Member(
 )
 
 fun main() {
-//    connect()
+//    db.connect()
 
     HikariCP.default("jdbc:mysql://localhost:3306/kotliquery?serverTimezone=UTC", "root", "dkdltm123")
 
@@ -31,13 +33,13 @@ fun main() {
 //        val allRowsQuery =
 //            queryOf("select * from members")
 //                .map { row ->
-//                    Member(
+//                    db.Member(
 //                        id = row.long("id"),
 //                        name = row.string("name"),
 //                        age = row.int("age")
 //                    )
 //                }.asList
-//        val rows: List<Member> = it.run(allRowsQuery)
+//        val rows: List<db.Member> = it.run(allRowsQuery)
 //
 //        for(row in rows) {
 //            println(row)

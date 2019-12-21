@@ -1,3 +1,5 @@
+package sqs
+
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import software.amazon.awssdk.regions.Region
