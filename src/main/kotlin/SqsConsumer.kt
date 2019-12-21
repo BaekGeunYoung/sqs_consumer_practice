@@ -50,10 +50,10 @@ class SqsConsumer (private val sqs: SqsAsyncClient): CoroutineScope {
     }
 
     //큐메세지를 polling하는 작업을 무한히 반복할 수 있도록 하는 coroutine.
-    private suspend fun CoroutineScope.repeatUntilCancelled(block: suspend() -> Unit) {
+    private suspend fun CoroutineScope.repeatUntilCancelled(suspendFunc: suspend() -> Unit) {
         while(isActive) {
             try {
-                block()
+                suspendFunc()
                 yield()
             } catch (ex: CancellationException) {
                 println("coroutine on ${currentThread().name} cancelled")
