@@ -69,8 +69,8 @@ Counter = 100000
 Process finished with exit code 0
 ```
 
-### 2. Mutual Extension (Mutex)
-mutual extension은 공유자원에 변경이 일어나는 순간에 적절한 block을 통해 race condition의 발생을 막는 동기화 제어 기법이다. 코루틴에서 제공하는 mutex의 함수들을 이용해 간단하게 mutex 방식의 동기화 제어가 가능하다.
+### 2. Mutual Exclusion (Mutex)
+mutual exclusion은 공유자원에 변경이 일어나는 순간에 적절한 block을 통해 race condition의 발생을 막는 동기화 제어 기법이다. 코루틴에서 제공하는 mutex의 함수들을 이용해 간단하게 mutex 방식의 동기화 제어가 가능하다.
 `WithLock.kt`
 ```java
 val mutex = Mutex();
