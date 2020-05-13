@@ -1,7 +1,35 @@
 import kotlinx.coroutines.*
 
-fun main() {
-    test()
+fun main() = runBlocking {
+    launch {
+        println("1")
+    }
+
+    coroutineScope {
+        launch {
+            println("2")
+        }
+
+        println("3")
+    }
+
+    coroutineScope {
+        launch {
+            println("4")
+        }
+
+        println("5")
+    }
+
+    launch {
+        println("6")
+    }
+
+    for (i in 7..100) {
+        println(i.toString())
+    }
+
+    println("101")
 }
 
 fun test() = GlobalScope.launch {
