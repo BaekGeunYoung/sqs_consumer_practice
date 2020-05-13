@@ -1,10 +1,24 @@
 import kotlinx.coroutines.*
 
 fun main() {
-    testFun { println("test") }
+    test()
 }
 
-fun testFun(param: () -> Unit) {
-    param()
-    println("hi")
+fun test() = GlobalScope.launch {
+    launch {
+        delay(200L)
+        println("1")
+    }
+
+    launch {
+        launch {
+            delay(500L)
+            println("2")
+        }
+
+        delay(100L)
+        println("3")
+    }
+
+//    println("4")
 }
