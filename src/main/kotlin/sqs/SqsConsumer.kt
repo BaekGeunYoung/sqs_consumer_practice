@@ -17,11 +17,7 @@ import java.util.*
 import kotlin.coroutines.CoroutineContext
 
 
-class SqsConsumer (private val sqs: SqsAsyncClient): CoroutineScope {
-    private val supervisorJob = SupervisorJob()
-    override val coroutineContext: CoroutineContext
-        get() = Dispatchers.IO + supervisorJob
-
+class SqsConsumer (private val sqs: SqsAsyncClient) {
     private val N_WORKERS = 100
     private val SQS_URL = "https://sqs.ap-northeast-2.amazonaws.com/182756308452/ticket_reservation_data_queue"
 
@@ -85,7 +81,7 @@ class SqsConsumer (private val sqs: SqsAsyncClient): CoroutineScope {
     }
 
     //큐 메세지를 처리하는 예시 코드
-    private suspend fun processMsg(message: Message) {
+    private fun processMsg(message: Message) {
         println("${currentThread().name} Started processing message: ${message.body()}")
 
         using(sessionOf(HikariCP.dataSource()))
